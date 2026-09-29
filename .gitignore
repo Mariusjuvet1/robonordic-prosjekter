@@ -1,0 +1,7 @@
+*.bin
+*.elf
+build/
+__pycache__/
+.venv/
+.env
+secrets.h
