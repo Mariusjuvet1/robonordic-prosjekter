@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="no">
+<meta charset="utf-8">
+<title>Sensorstrøm</title>
+<pre id="ut">Venter på data …</pre>
+<script>
+  // Bytt adressen til din Raspberry Pi
+  const socket = new WebSocket("ws://raspberrypi.local:8000/ws/sensor");
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    document.getElementById("ut").textContent =
+      "Temperatur: " + data.temperatur + " °C\nLuftfuktighet: " + data.luftfuktighet + " %";
+  };
+</script>
+</html>

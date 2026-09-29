@@ -1,0 +1,70 @@
+name: Kompiler
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  arduino:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - fqbn: arduino:avr:uno
+            mapper: mikrokontrollere/arduino-startpakke sensorer/37-i-1-sensorsett sensorer/tof-og-lidar robotikk regulering
+          - fqbn: esp32:esp32:esp32
+            mapper: mikrokontrollere/esp32-kom-i-gang
+          - fqbn: esp32:esp32:XIAO_ESP32C3
+            mapper: mikrokontrollere/xiao-esp32-c3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/setup-arduino-cli@v2
+      - name: Installer kjerner og biblioteker
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
+          if [[ "${{ matrix.fqbn }}" == esp32:* ]]; then arduino-cli core install esp32:esp32; fi
+          arduino-cli lib install Servo PID "Adafruit_VL53L0X"
+      - name: Kompiler skisser
+        run: |
+          feil=0
+          for ino in $(find ${{ matrix.mapper }} -name '*.ino'); do
+            echo "::group::$ino"
+            arduino-cli compile --fqbn ${{ matrix.fqbn }} "$(dirname "$ino")" || feil=1
+            echo "::endgroup::"
+          done
+          exit $feil
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntakssjekk
+        run: python -m py_compile $(find . -name '*.py')
+      - name: Test FastAPI-eksempelet
+        working-directory: programvare/fastapi-maker
+        run: |
+          pip install -q -r requirements.txt httpx
+          python -c "
+          from fastapi.testclient import TestClient
+          from main import app
+          c = TestClient(app)
+          assert c.get('/').status_code == 200
+          assert 'temperatur' in c.get('/sensor').json()
+          assert c.post('/rele', json={'slaa_paa': True}).json()['rele_status'] == 'på'
+          with c.websocket_connect('/ws/sensor') as ws:
+              assert 'luftfuktighet' in ws.receive_json()
+          "
+      - name: Kjør Kalman-filteret
+        working-directory: programvare/kalman-filter
+        env:
+          MPLBACKEND: Agg
+        run: |
+          pip install -q -r requirements.txt
+          python kalman.py
