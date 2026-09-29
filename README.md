@@ -8,6 +8,8 @@ Kode til guidene og prosjektene på **[robonordic.no](https://robonordic.no/guid
 |---|---|---|
 | [`mikrokontrollere/esp32-kom-i-gang`](mikrokontrollere/esp32-kom-i-gang) | [Kom i gang med ESP32](https://robonordic.no/kom-i-gang-med-esp32-din-forste-mikrokontroller/) | ESP32 |
 | [`mikrokontrollere/xiao-esp32-c3`](mikrokontrollere/xiao-esp32-c3) | [XIAO ESP32-C3](https://robonordic.no/xiao-esp32-c3-kraftig-mikrokontroller-i-miniformat/) | ESP32-C3 |
+| [`mikrokontrollere/arduino-startpakke`](mikrokontrollere/arduino-startpakke) | [Arduino-startpakke: fem første prosjekter](https://robonordic.no/arduino-startpakke-dine-forste-fem-prosjekter/) | Arduino UNO |
+| [`sensorer/37-i-1-sensorsett`](sensorer/37-i-1-sensorsett) | [37-i-1 sensorsett](https://robonordic.no/37-i-1-sensorsett-slik-bruker-du-modulene/) | Arduino UNO/ESP32 |
 | [`sensorer/tof-og-lidar`](sensorer/tof-og-lidar) | [ToF og LiDAR-sensorer](https://robonordic.no/tof-og-lidar-sensorer-presise-avstandsmaalinger-for-robotikk/) | Arduino/ESP32 + Python |
 
 Flere prosjekter kommer etter hvert som guidene publiseres – se [alle prosjekter](https://robonordic.no/category/prosjekter/).
